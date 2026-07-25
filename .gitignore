@@ -9,3 +9,6 @@
 # 压缩包
 *.zip
 *.rar
+
+# GitHub rejects this existing presentation because it is larger than 50 MB.
+JJTea大二下/计算机视觉/PPT/第1章_绪言.pptx
