@@ -1,0 +1,51 @@
+题目描述：
+银行有 5 个服务窗口。普通用户和 VIP 用户都可以取号等待。要求：
+
+有空窗口时可以叫号；
+VIP 用户优先于普通用户；
+但为了防止普通用户长期饥饿，规定连续服务 3 个 VIP 后，如果有普通用户等待，则必须服务一个普通用户；
+叫号过程必须互斥；
+服务窗口最多同时服务 5 人。
+
+请用 PV 操作描述普通用户、VIP 用户和叫号窗口的同步互斥过程。
+
+临界资源：window = 5
+共享变量：vipwait = 0, commonwait = 0, vipserve = 0
+对应的保护信号量：vwmutex, cwmutex, vsmutex
+状态信号量 customer
+进程 Queue(), Call()
+
+Queue():
+    while(1){
+        if(ctype = vip):
+            P(vwmutex);
+                vipwait++;
+            V(vwmutex);
+        else:
+            P(cwmutex);
+                commonwait++;
+            V(cwmutex);
+
+        V(customer);
+    }
+
+Call():
+    while(1){
+        P(window)
+        if (vipserve == 3):
+            P(vsmutex);
+                vipserve = 0;
+            V(vsmutex);
+
+            P(cmutex);
+                commonwait -= 1;
+            V(cmutex);
+        else:
+            P(vwmutex);
+                vipwait -= 1;
+            V(vwmutex);
+            P(vsmutex);
+                vipserve += 1;
+            V(vsmutex);
+        V(customer);
+    }

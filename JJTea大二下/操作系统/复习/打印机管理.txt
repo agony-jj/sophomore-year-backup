@@ -1,0 +1,56 @@
+某实验室有 3 台打印机，学生和老师都可以提交打印任务。要求：
+
+打印机最多同时处理 3 个任务；
+老师任务优先于学生任务；
+如果已经连续打印了 2 个老师任务，并且有学生任务等待，则下一个必须打印学生任务，防止学生任务饥饿；
+维护两个共享变量：teacherWait 和 studentWait，分别表示等待中的老师任务数和学生任务数；
+对等待任务数和连续老师任务数的修改必须互斥；
+打印机进程是长期运行的服务进程；
+每个提交打印任务的人只提交一次任务，提交后等待被打印。
+
+请用 PV 操作描述该系统。
+
+两个进程：一个是提交后的等待队列Queue()，一个是打印Print()
+临界资源：tasks = 3
+变量当前服务老师数：teacherserve = 0;
+维护teacherserve：tsmutex = 1;
+twmutex = 1, swmutex = 1;
+roletype用于判断老师还是学生，两个取值，teacher和student
+一个信号量用于记录等待人数：role
+服务函数print()
+
+Queue():
+    while(1){
+        if (roletype = teacher):
+            P(twmutex);
+                teacherWait++;
+            V(twmutex);
+        else:
+            P(swmutex);
+                studentWait++;
+            V(swmutex);
+        V(role);
+    }
+
+Print():
+    while(1){
+        P(role);
+        P(tasks)
+
+        P(tsmutex);
+        P(twmutex);
+        P(swmutex);
+        if(teacherserve == 2 and studentWait > 0):
+            teacherserve = 0;
+            studentWait--;
+            print();
+        else:
+            teacherserve += 1;
+            teacherWait--;
+        V(tsmutex);
+        V(twmutex);
+        V(swmutex);
+
+        V(tasks);
+
+    }

@@ -1,0 +1,48 @@
+题目描述：
+某停车场有 10 个停车位，入口和出口各有一个闸机。
+
+车辆进入停车场时：
+
+如果有空车位，则车辆可以进入；
+如果没有空车位，则车辆必须在入口等待；
+入口闸机一次只能允许一辆车通过；
+出口闸机一次也只能允许一辆车通过；
+停车场内部维护一个变量 carCount，表示当前停车场内车辆数，对它的修改必须互斥；
+车辆离开后释放一个车位，等待进入的车辆可以进入。
+
+请用 PV 操作描述车辆进入和离开停车场的同步互斥过程。
+
+临界资源： park = 10;
+临界操作：enter(),leave()
+维护临界操作的信号量：emutex,lmutex
+变量维护信号量：cmutex
+进程：Enter(),Leave()
+状态信号量：car
+
+Enter():
+    while(1){
+        P(park);
+        P(emutex);
+            enter();
+        V(emutex);
+        P(cmutex);
+            carCount++;
+        V(cmutex);
+
+        V(car);
+    }
+    
+
+Leave():
+    while(1){
+        P(car);
+        P(lmutex);
+            leave();
+        V(lmutex);
+        P(cmutex);
+            carCount--;
+        V(cmutex);
+
+        V(park);
+    }
+    

@@ -1,0 +1,33 @@
+题目描述：
+系统中有一个发送进程 Sender 和一个接收进程 Receiver，两者共享一个 单缓冲区 buffer。要求：
+
+Sender 每次产生一条消息，并放入 buffer；
+Receiver 每次从 buffer 中取出一条消息并处理；
+buffer 为空时，Receiver 不能取；
+buffer 满时，Sender 不能放；
+对 buffer 的访问必须互斥。
+
+请用 PV 操作描述 Sender 和 Receiver 的同步互斥过程。
+
+此题本质还是生产者消费者；
+
+设置两个资源信号量：full = 0, empty = buffer.size
+进程：Sender(), Receiver()
+临界区操作：对buffer的操作buffer()
+临界区控制信号量：mutex = 1
+其它函数：generate()生成一条消息
+
+Sender():
+    P(empty);
+    P(mutex);
+        generate();
+        buffer();
+    V(mutex);
+    V(full);
+
+Receiver():
+    P(full);
+    P(mutex);
+        buffer();
+    V(mutex);
+    V(empty);

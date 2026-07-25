@@ -1,0 +1,42 @@
+题目描述：
+一个理发店有一名理发师、一把理发椅和 n 个等待座位。顾客到来时：
+
+如果理发师空闲，直接理发；
+如果理发师正在理发，但有空等待座位，则顾客坐下等待；
+如果等待座位满了，顾客离开；
+如果没有顾客，理发师睡觉；
+有顾客到来时，唤醒理发师。
+
+请用 PV 操作描述理发师和顾客进程。
+
+信号量：
+    barber = 1 表示barber是否空闲；
+    customer = 0 表示当前等待的顾客数；
+    cmutex = 1 用于考虑顾客数的修改；
+    full = 0 等待区人数满信号量
+    empty = n 等待区人数空信号量
+
+函数：
+    cutthehair()理发
+    sleep()睡觉
+
+Barber():
+    P(full);
+        cutthehair();
+    
+    P(cmutex);
+        customer--;
+    V(cmutex);
+
+    V(empty);
+
+    if customer == 0:
+        sleep;
+
+Customer():
+    P(empty);
+    P(cmutex);
+        customer++;
+    V(cmutex);
+    V(full);
+    P(baber);
